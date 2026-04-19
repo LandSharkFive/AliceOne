@@ -1,0 +1,42 @@
+> L bigcust.csv
+> s
+Index,CustomerId,FirstName,LastName,Company,City,Country,Phone1,Phone2,Email,SubscriptionDate,Website
+1,EB54EF1154C3A78,Heather,Callahan,Mosley-David,Lake Jeffborough,Norway,043-797-5229,915.112.1727,urangel@espinoza-francis.net,2020-08-26,http://www.escobar.org/
+2,10dAcafEBbA5FcA,Kristina,Ferrell,"Horn,Shepard and Watson",Aaronville,Andorra,932-062-1802,(209)172-7124x3651,xreese@hall-donovan.com,2020-04-27,https://tyler-pugh.info/
+3,67DAB15Ebe4BE4a,Briana,Andersen,Irwin-Oneal,East Jordan,Nepal,8352752061,(567)135-1918,haleybraun@blevins-sexton.com,2022-03-22,https://www.mack-bell.net/
+4,6d350C5E5eDB4EE,Patty,Ponce,Richardson Group,East Kristintown,Northern Mariana Islands,302.398.3833,196-189-7767x770,hohailey@anthony.com,2020-07-02,https://delacruz-freeman.org/
+5,5820deAdCF23EFe,Kathleen,Mccormick,Carson-Burch,Andresmouth,Macao,001-184-153-9683x1497,552.051.2979x342,alvaradojesse@rangel-shields.com,2021-01-17,https://welch.info/
+6,E1CDEaC63fDd5aA,Trevor,Lee,Maddox Group,Lake Madelineburgh,Senegal,+1-134-348-0265x9132,+1-313-882-4167,briangriffin@chang.org,2021-08-13,https://www.roberts.com/
+7,3e1187fCcebC8d2,Mathew,Hoffman,"Bender,Pittman and Kidd",West Ralph,Uzbekistan,842.380.1168,(178)178-5447x32603,bauergerald@morrison.com,2020-04-09,http://www.holt.com/
+8,47C5cEE243c9A7b,Glenn,Wiggins,Glenn-Harvey,Ambershire,Falkland Islands (Malvinas),245-207-5608x563,8806867785,changkellie@howell.com,2021-04-02,http://carlson.com/
+9,cacaD68a5e4BF4b,Bruce,Payne,"Arroyo,Cain and Hudson",Barrettview,Zimbabwe,391.313.4649x42910,166.227.5055,mayerjerome@hurst-graham.net,2020-11-26,https://www.glenn-snow.com/
+10,436b9c41cfb1fa3,Brendan,Franco,"Schaefer,Blair and Shaffer",New Rickey,Ukraine,001-315-224-3556,254-621-7128x7573,kentryan@stone-oneill.com,2021-06-29,http://ruiz.com/
+Rows: 11
+> s index == 1
+Index,CustomerId,FirstName,LastName,Company,City,Country,Phone1,Phone2,Email,SubscriptionDate,Website
+1,EB54EF1154C3A78,Heather,Callahan,Mosley-David,Lake Jeffborough,Norway,043-797-5229,915.112.1727,urangel@espinoza-francis.net,2020-08-26,http://www.escobar.org/
+Rows: 1
+> s index == 2
+Index,CustomerId,FirstName,LastName,Company,City,Country,Phone1,Phone2,Email,SubscriptionDate,Website
+2,10dAcafEBbA5FcA,Kristina,Ferrell,"Horn,Shepard and Watson",Aaronville,Andorra,932-062-1802,(209)172-7124x3651,xreese@hall-donovan.com,2020-04-27,https://tyler-pugh.info/
+Rows: 1
+> s index > 0 index < 3
+Index,CustomerId,FirstName,LastName,Company,City,Country,Phone1,Phone2,Email,SubscriptionDate,Website
+1,EB54EF1154C3A78,Heather,Callahan,Mosley-David,Lake Jeffborough,Norway,043-797-5229,915.112.1727,urangel@espinoza-francis.net,2020-08-26,http://www.escobar.org/
+2,10dAcafEBbA5FcA,Kristina,Ferrell,"Horn,Shepard and Watson",Aaronville,Andorra,932-062-1802,(209)172-7124x3651,xreese@hall-donovan.com,2020-04-27,https://tyler-pugh.info/
+Rows: 2
+> s city == rosemouth
+Index,CustomerId,FirstName,LastName,Company,City,Country,Phone1,Phone2,Email,SubscriptionDate,Website
+2685,AB4a3db2FEa2b0c,Kristen,Decker,Raymond-Perry,Rosemouth,Kiribati,+1-486-152-9872x64911,068.601.4438,guzmanmonique@henderson-davila.net,2021-03-14,http://carroll-armstrong.com/
+9207,A30DA788eA98159,Trevor,Gamble,Mathis PLC,Rosemouth,France,134.568.0573,(435)932-5182,connorrocha@pope-ray.org,2021-12-13,http://www.welch.com/
+Rows: 2
+> s city == rosemouth country == france
+Index,CustomerId,FirstName,LastName,Company,City,Country,Phone1,Phone2,Email,SubscriptionDate,Website
+9207,A30DA788eA98159,Trevor,Gamble,Mathis PLC,Rosemouth,France,134.568.0573,(435)932-5182,connorrocha@pope-ray.org,2021-12-13,http://www.welch.com/
+Rows: 1
+> a
+FileName: bigcust.csv
+Rows: 10000
+Columns: 12
+Sorted: True
+> q
