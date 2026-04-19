@@ -38,6 +38,10 @@ namespace AliceOne
 
         private IComparer<string[]> comparer = new IdentifierComparer();
 
+        private const int PageSize = 10;
+
+        private int CurrentRow = 0;
+
 
         // ----- Initialization ----------
 
@@ -120,6 +124,12 @@ namespace AliceOne
             Console.WriteLine("  A              : Show table status");
             Console.WriteLine("  L [path]       : Load a CSV file");
             Console.WriteLine("  W [path]       : Write (Save) current data to file");
+
+            Console.WriteLine("\n[ NAVIGATION ]");
+            Console.WriteLine("  N              : Next page");
+            Console.WriteLine("  P              : Previous page");
+            Console.WriteLine("  T              : Top of file");
+            Console.WriteLine("  B              : Bottom of file");
 
             Console.WriteLine("\n[ SEARCHING ]");
             Console.WriteLine("  S              : Select all");
@@ -528,6 +538,75 @@ namespace AliceOne
                     _ => false
                 };
             }
+        }
+
+        // ---------- Paging ----------
+
+        /// <summary>
+        /// Advances the view to the next page of data.
+        /// </summary>
+        public void NextPage()
+        {
+            if (CurrentRow + PageSize < Rows.Count)
+            {
+                CurrentRow += PageSize;
+            }
+            else
+            {
+                CurrentRow = 0;
+            }
+            ShowPage();
+        }
+
+        /// <summary>
+        /// Moves the view to the previous page of data.
+        /// </summary>
+        public void PreviousPage()
+        {
+            if (CurrentRow - PageSize >= 0)
+            {
+                CurrentRow -= PageSize;
+            }
+            else
+            {
+                CurrentRow = 0; 
+            }
+            ShowPage();
+        }
+
+        /// <summary>
+        /// Displays the current page of data.
+        /// </summary>
+        void ShowPage()
+        {
+            Console.Clear(); 
+
+            // Calculate last row.
+            int lastRow = Math.Min(CurrentRow + PageSize, Rows.Count);
+
+            Console.WriteLine(string.Join(",", Columns));
+            for (int i = CurrentRow; i < lastRow; i++)
+            {
+                Console.WriteLine(string.Join(",", Rows[i]));
+            }
+        }
+
+        /// <summary>
+        /// Displays the first page.
+        /// </summary>
+        public void ShowTop()
+        {
+            CurrentRow = 0;
+            ShowPage();
+        }
+
+        /// <summary>
+        /// Displays the last page.
+        /// </summary>
+        public void ShowBottom()
+        {
+            CurrentRow = Math.Max(0, Rows.Count - PageSize);
+            ShowPage();
         }
 
         // --------- Sorting ------------

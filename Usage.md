@@ -16,6 +16,7 @@ AliceOne is a high-performance CSV editor using one-letter commands.
 | X	| Remove duplicate Ids X | 
 | Q	| Quit application  Q | 
 
+
 ## File Operations
 
 ### C (Clear): Removes all rows currently in memory.
@@ -25,6 +26,18 @@ AliceOne is a high-performance CSV editor using one-letter commands.
 ### W [path] (Write): Exports the current data to the specified path.
 
 ### Q (Quit): Terminate the session. 
+
+
+## Navigation
+
+### N (Next Page): Move to next page.
+
+### P (Previous Page): Move to previous page.
+
+### T (Top): Show first page.
+
+### B (Bottom): Show last page.
+
 
 ## Viewing & Filtering
 

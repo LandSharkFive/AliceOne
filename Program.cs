@@ -33,13 +33,17 @@
                 switch (command)
                 {
                     case 'A': alice.ShowStatus(); break;
+                    case 'B': alice.ShowBottom(); break;
                     case 'C': alice.Clear(); break;
                     case 'D': alice.HandleDelete(line); break;
                     case 'I': alice.HandleInsert(line); break;
                     case 'L': alice.HandleLoad(line); break;
+                    case 'N': alice.NextPage(); break;
                     case 'O': alice.HandleSort(line); break;
+                    case 'P': alice.PreviousPage(); break;
                     case 'Q': return;
                     case 'S': alice.HandleSelect(line); break;
+                    case 'T': alice.ShowTop(); break;
                     case 'W': alice.HandleWrite(line); break;
                     case 'X': alice.FixDuplicates(); break;
                     case '?': alice.ShowHelp(); break;

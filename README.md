@@ -16,12 +16,23 @@
 
 AliceOne uses intuitive single-letter commands to manage your data.
 
+## Viewing
+
 | Command | Action | Syntax / Example |
 | :--- | :--- | :--- |
 | **L** | **Load** | `L file.csv` |
 | **W** | **Write** | `W save.csv` |
 | **C** | **Clear** | `C` |
 | **Q** | **Quit** | `Q` |
+
+## Navigation
+
+| Command | Action | Syntax / Example |
+| :--- | :--- | :--- |
+| **N** | **Next Page** | `N` |
+| **P** | **Previous Page** | `P` |
+| **T** | **Top** | `T` |
+| **B** | **Bottom** | `B` |
 
 ## Selection & Filtering (S)
 The S command is used to search for data:
