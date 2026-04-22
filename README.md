@@ -66,5 +66,5 @@ Operators:  <, >, ==, !=, <=, >=
 ---
 
 ## Usage Tips
-* Order Matters: When using the Update (U) command, ensure the Column and Row ID are accurate to avoid data corruption.
+* Order Matters: When using the Insert (I) command, ensure the Column and Row ID are accurate to avoid data corruption.
 * Memory Management: Use the Clear (C) command before loading a new large dataset to ensure optimal performance.
