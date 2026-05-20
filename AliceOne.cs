@@ -64,15 +64,23 @@ namespace AliceOne
             Rows.Clear();
             Columns.Clear();
 
-            var allLines = File.ReadLines(path);
+            using (var reader = new StreamReader(path))
+            {
+                string headerLine = reader.ReadLine();
+                if (headerLine != null)
+                {
+                    Columns = headerLine.Split(',').Select(h => h.Trim()).ToList();
+                }
 
-            // Use Take(1) for header and Skip(1) for data
-            Columns = allLines.Take(1).First().Split(',').Select(h => h.Trim()).ToList();
-
-            Rows = allLines.Skip(1)
-                .Where(line => !string.IsNullOrWhiteSpace(line))
-                .Select(line => line.Split(',').Select(c => c.Trim()).ToArray())
-                .ToList();
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (!string.IsNullOrWhiteSpace(line))
+                    {
+                        Rows.Add(line.Split(',').Select(c => c.Trim()).ToArray());
+                    }
+                }
+            }
 
             Rows.Sort(comparer);
             IsSorted = true;
@@ -389,18 +397,34 @@ namespace AliceOne
                 return;
             }
 
-            Delete(parts[3]);
+            Delete(colIndex, parts[3]);
         }
 
         /// <summary>
-        /// Locates and removes a row based on its unique Identifier (Column 0).
+        /// Locates and removes a row based on its column index and value.
         /// </summary>
-        private void Delete(string id)
+        private void Delete(int colIndex, string value)
         {
-            int rowIndex = FindRowIndex(id);
+            int rowIndex = -1;
+
+            // Use Binary Search ONLY if searching by the sorted ID column
+            if (colIndex == 0)
+            {
+                rowIndex = Rows.BinarySearch(new[] { value }, comparer);
+            }
+            else
+            {
+                // Linear scan lookup for other columns
+                rowIndex = Rows.FindIndex(r => r.Length > colIndex && string.Equals(r[colIndex], value, StringComparison.OrdinalIgnoreCase));
+            }
+
             if (rowIndex >= 0)
             {
                 Rows.RemoveAt(rowIndex);
+            }
+            else
+            {
+                Console.WriteLine("Record not found.");
             }
         }
 
@@ -467,51 +491,33 @@ namespace AliceOne
         private void SelectWhere(int c1, string o1, string v1)
         {
             Console.WriteLine(string.Join(",", Columns));
-
+            // Parse the filter value ONCE upfront
+            bool isNumericFilter = double.TryParse(v1, out double valNum);
             int matchCount = 0;
+
             foreach (var row in Rows)
             {
-                if (IsMatch(row, c1, o1, v1))
+                if (IsMatch(row, c1, o1, v1, isNumericFilter, valNum))
                 {
                     Console.WriteLine(string.Join(",", row));
                     matchCount++;
                 }
             }
+
             Console.WriteLine($"Rows: {matchCount}");
         }
-
-        /// <summary>
-        /// Filters and displays rows that satisfy two different conditions simultaneously with logical AND.
-        /// </summary>
-        private void SelectWhereDual(int c1, string o1, string v1, int c2, string o2, string v2)
-        {
-            Console.WriteLine(string.Join(",", Columns));
-
-            int matchCount = 0;
-            foreach (var row in Rows)
-            {
-                if (IsMatch(row, c1, o1, v1) && IsMatch(row, c2, o2, v2))
-                {
-                    Console.WriteLine(string.Join(",", row));
-                    matchCount++;
-                }
-            }
-            Console.WriteLine($"Rows: {matchCount}");
-        }
-
 
         /// <summary>
         /// Evaluates a single cell within a row against a provided value using a specific operator.
         /// Supports both numeric (double) and case-insensitive string comparisons.
         /// </summary>
-        private bool IsMatch(string[] row, int col, string op, string val)
+        private bool IsMatch(string[] row, int col, string op, string val, bool isNumericFilter, double valNum)
         {
             if (col < 0 || col >= row.Length) return false;
-
             string cell = row[col];
 
-            // If both sides are numbers, compare as doubles.
-            if (double.TryParse(cell, out double cellNum) && double.TryParse(val, out double valNum))
+            // If the filter is numeric and the cell is numeric, use high-speed double comparison
+            if (isNumericFilter && double.TryParse(cell, out double cellNum))
             {
                 return op switch
                 {
@@ -524,21 +530,43 @@ namespace AliceOne
                     _ => false
                 };
             }
-            else
+
+            // Otherwise fallback to case-insensitive string comparison
+            int cmp = string.Compare(cell, val, StringComparison.OrdinalIgnoreCase);
+            return op switch
             {
-                int cmp = string.Compare(cell, val, StringComparison.OrdinalIgnoreCase);
-                return op switch
-                {
-                    "==" => cmp == 0,
-                    "!=" => cmp != 0,
-                    ">" => cmp > 0,
-                    "<" => cmp < 0,
-                    ">=" => cmp >= 0,
-                    "<=" => cmp <= 0,
-                    _ => false
-                };
-            }
+                "==" => cmp == 0,
+                "!=" => cmp != 0,
+                ">" => cmp > 0,
+                "<" => cmp < 0,
+                ">=" => cmp >= 0,
+                "<=" => cmp <= 0,
+                _ => false
+            };
         }
+
+        /// <summary>
+        /// Filters and displays rows that satisfy two different conditions simultaneously with logical AND.
+        /// </summary>
+        private void SelectWhereDual(int c1, string o1, string v1, int c2, string o2, string v2)
+        {
+            Console.WriteLine(string.Join(",", Columns));
+            bool isNumericFilterOne = double.TryParse(v1, out double valOne);
+            bool isNumericFilterTwo = double.TryParse(v2, out double valTwo);
+
+            int matchCount = 0;
+            foreach (var row in Rows)
+            {
+                if (IsMatch(row, c1, o1, v1, isNumericFilterOne, valOne) 
+                    && IsMatch(row, c2, o2, v2, isNumericFilterTwo, valTwo))
+                {
+                    Console.WriteLine(string.Join(",", row));
+                    matchCount++;
+                }
+            }
+            Console.WriteLine($"Rows: {matchCount}");
+        }
+
 
         // ---------- Paging ----------
 
@@ -653,15 +681,23 @@ namespace AliceOne
         }
 
         /// <summary>
-        /// Removes duplicate rows based on the value in Column 0 (ID). If multiple rows share the same ID, only the first occurrence is kept.
+        /// Removes duplicate rows based on the value in Column 0 (ID). 
         /// </summary>
         private void RemoveDuplicateById()
         {
             if (Rows.Count == 0) return;
-            Rows = Rows.Where(r => r.Length > 0)
-                       .GroupBy(r => r[0], StringComparer.OrdinalIgnoreCase)
-                       .Select(g => g.First())
-                       .ToList();
+
+            var seenIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var uniqueRows = new List<string[]>(Rows.Count);
+
+            foreach (var row in Rows)
+            {
+                if (row.Length > 0 && seenIds.Add(row[0]))
+                {
+                    uniqueRows.Add(row);
+                }
+            }
+            Rows = uniqueRows;
         }
 
     }
