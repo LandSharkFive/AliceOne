@@ -95,6 +95,7 @@ namespace AliceOne
             Rows.Clear();
             Columns.Clear();
             IsSorted = true;
+            CurrentRow = 0;
         }
 
         // ------ Read and Write Files -----------
@@ -110,13 +111,9 @@ namespace AliceOne
             {
                 Load(parts[1]);
             }
-            else if (parts.Length < 2)
-            {
-                Console.WriteLine("Error: Path missing. Usage: L [file_path]");
-            }
             else 
             {
-                Console.WriteLine("Error: Too many arguments.  Usage: L [file_path]");
+                Console.WriteLine("Error: Invalid arguments. Usage: L [file_path]");
             }
         }
 
@@ -127,39 +124,33 @@ namespace AliceOne
         public void ShowHelp()
         {
             Console.WriteLine("\n--- CSV Editor Commands ---");
-
             Console.WriteLine("\n[ VIEWING ]");
             Console.WriteLine("  A              : Show table status");
             Console.WriteLine("  L [path]       : Load a CSV file");
             Console.WriteLine("  W [path]       : Write (Save) current data to file");
-
             Console.WriteLine("\n[ NAVIGATION ]");
             Console.WriteLine("  N              : Next page");
             Console.WriteLine("  P              : Previous page");
             Console.WriteLine("  T              : Top of file");
             Console.WriteLine("  B              : Bottom of file");
-
             Console.WriteLine("\n[ SEARCHING ]");
             Console.WriteLine("  S              : Select all");
             Console.WriteLine("  S [col] [op] [val] : Search (ex: S Age > 30) ");
             Console.WriteLine("  S [c1] [op] [v1] [c2] [op] [v2] : Search (ex: S Age > 20 City == NY)");
             Console.WriteLine("  Operators: ==, !=, >, <, >=, <=");
-
             Console.WriteLine("\n[ EDITING ]");
             Console.WriteLine("  I [v1,v2...]   : Insert new row (comma-separated)");
             Console.WriteLine("  D [col] == [id] : Delete row by ID");
             Console.WriteLine("  X              : Remove duplicate rows");
-
             Console.WriteLine("\n[ SORTING ]");
             Console.WriteLine("  O              : Sort by id");
-
             Console.WriteLine("\n  Q              : Quit");
             Console.WriteLine("---------------------------\n");
         }
 
 
         /// <summary>
-        /// Write a file to disk. The file is serialized into a CSV format. Columns are separated by commas.
+        /// Writes the current in-memory data to a CSV file. Columns are separated by commas.
         /// </summary>
         public void HandleWrite(string line)
         {
